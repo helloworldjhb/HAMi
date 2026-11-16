@@ -744,7 +744,7 @@ func Test_graphSelect(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			result1 := graphSelect(test.args.d, test.args.c)
+			result1 := graphSelect(test.args.d, test.args.c, 0)
 			assert.DeepEqual(t, result1, test.want1)
 		})
 	}
@@ -1000,7 +1000,7 @@ func Test_graphSelect_ScoreSortedInput(t *testing.T) {
 		}
 	}
 
-	got := graphSelect(scoreOrdered, 4)
+	got := graphSelect(scoreOrdered, 4, 0)
 	assert.DeepEqual(t, got, []int{0, 1, 2, 3})
 
 	// Every returned value has to name a free device.
@@ -1043,7 +1043,7 @@ func makeOffsetDeviceUsages(nodeType string, base uint, n int, used map[uint]int
 func Test_graphSelect_ReturnsIndexesNotPositions(t *testing.T) {
 	devices := makeOffsetDeviceUsages("trn", 100, 16, nil)
 
-	got := graphSelect(devices, 4)
+	got := graphSelect(devices, 4, 0)
 	assert.DeepEqual(t, got, []int{100, 101, 102, 103})
 
 	known := map[int]bool{}
@@ -1060,7 +1060,7 @@ func Test_graphSelect_ReturnsIndexesNotPositions(t *testing.T) {
 func Test_graphSelect_BusyDeviceWithOffsetIndexes(t *testing.T) {
 	devices := makeOffsetDeviceUsages("trn", 100, 16, map[uint]int64{101: 1})
 
-	got := graphSelect(devices, 4)
+	got := graphSelect(devices, 4, 0)
 	assert.DeepEqual(t, got, []int{104, 105, 106, 107})
 
 	byIndex := map[uint]*device.DeviceUsage{}
@@ -1089,5 +1089,5 @@ func Test_graphSelect_NodeTypeReadFromLowestIndex(t *testing.T) {
 		}
 	}
 
-	assert.DeepEqual(t, graphSelect(scoreOrdered, 4), []int{0, 1, 2, 3})
+	assert.DeepEqual(t, graphSelect(scoreOrdered, 4, 0), []int{0, 1, 2, 3})
 }
